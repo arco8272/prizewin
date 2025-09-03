@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Scratch Card - Win Amazing Prizes!{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <i class="fas fa-gift fa-5x text-primary mb-4"></i>
+                    <h1 class="card-title mb-3">🎁 Welcome to Scratch Card Rewards!</h1>
+                    <p class="lead mb-4">Get your unique scratch card link to win amazing prizes!</p>
+                    
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle me-2"></i>How it works:</h5>
+                        <ol class="text-start mb-0">
+                            <li>Get your unique scratch card link from our admin</li>
+                            <li>Click the link to open your personal scratch card</li>
+                            <li>Scratch the surface to reveal your prize</li>
+                            <li>Fill in your details to claim your reward</li>
+                            <li>Each link works only once!</li>
+                        </ol>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('admin') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-cogs me-2"></i>Admin Panel
+                        </a>
+                        <small class="text-muted d-block mt-2">
+                            Generate redemption links for your customers
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

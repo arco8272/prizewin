@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Generate Redemption Links{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-cogs me-2"></i>Admin Panel - Generate Redemption Links</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Generate Links Form -->
+                    <div class="row mb-5">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-plus-circle me-2"></i>Generate New Links</h5>
+                            <form method="POST" action="{{ url_for('admin_generate_links') }}">
+                                <div class="mb-3">
+                                    <label for="num_links" class="form-label">Number of Links to Generate</label>
+                                    <input type="number" class="form-control" id="num_links" name="num_links" 
+                                           min="1" max="50" value="5" required>
+                                    <small class="form-text text-muted">Generate 1-50 links at once</small>
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-magic me-2"></i>Generate Links
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle me-2"></i>How it works:</h6>
+                                <ul class="mb-0">
+                                    <li>Each link allows one customer to scratch and win a random prize</li>
+                                    <li>After redemption, the link becomes inactive</li>
+                                    <li>Share these links with your customers</li>
+                                    <li>Track redemption status below</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generated Links List -->
+                    <h5><i class="fas fa-list me-2"></i>Generated Links</h5>
+                    {% if links %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Link</th>
+                                    <th>Status</th>
+                                    <th>Prize Won</th>
+                                    <th>Redeemed By</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for link in links %}
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" 
+                                                   value="{{ url_for('scratch_with_token', token=link.token, _external=True) }}" 
+                                                   readonly id="link-{{ link.id }}">
+                                            <button class="btn btn-outline-secondary btn-sm" type="button" 
+                                                    onclick="copyLink('link-{{ link.id }}')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if link.is_redeemed %}
+                                            <span class="badge bg-danger">Redeemed</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if link.product %}
+                                            {{ link.product.name }}
+                                        {% else %}
+                                            <em>Not determined yet</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if link.user_details %}
+                                            {{ link.user_details.full_name }}<br>
+                                            +91 {{ link.user_details.phone }}<br>
+
+                                            <small class="text-muted">{{ link.user_details.address }}</small>
+                                        {% else %}
+                                            <em>-</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small>{{ link.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                    </td>
+                                    <td>
+                                        {% if not link.is_redeemed %}
+                                            <a href="{{ url_for('scratch_with_token', token=link.token) }}" 
+                                               class="btn btn-sm btn-primary" target="_blank">
+                                                <i class="fas fa-external-link-alt"></i> Test
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No redemption links generated yet. Use the form above to create some!
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyLink(elementId) {
+    const input = document.getElementById(elementId);
+    input.select();
+    input.setSelectionRange(0, 99999);
+    
+    try {
+        document.execCommand('copy');
+        // Show success feedback
+        const button = input.nextElementSibling;
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-success');
+        
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+    }
+}
+</script>
+{% endblock %}

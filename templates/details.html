@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Claim Your Prize - Details Required{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    {% if success %}
+    <!-- Success State -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success"></i>
+                    </div>
+                    <h2 class="card-title text-success mb-3">🎉 Congratulations!</h2>
+                    <p class="lead mb-4">You've successfully claimed your <strong>{{ product.name }}</strong>!</p>
+
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle me-2"></i>Prize Successfully Claimed!</h5>
+                        <p class="mb-0">Your prize has been reserved and we'll contact you soon with redemption details.
+                            The scratch card link is now inactive.</p>
+                    </div>
+
+                    <!-- <div class="mt-4"> -->
+                    <!-- this is home button reedem -->
+                    <!-- <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-home me-2"></i>Back to Home
+                            </a> -->
+                </div>
+
+                <div class="mt-4 pt-4 border-top">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        This scratch card link can only be used once and is now inactive.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Details Form -->
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>You Won!
+                </h2>
+            </div>
+            <div class="card-body p-5">
+                <!-- Prize Display -->
+                <div class="text-center mb-5">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid rounded shadow mb-3"
+                        style="max-height: 200px;">
+                    <h3 class="text-primary">{{ product.name }}</h3>
+                    <p class="text-muted">{{ product.description }}</p>
+                </div>
+
+                <hr>
+
+                <!-- Details Form -->
+                <h4 class="mb-4">
+                    <i class="fas fa-user-edit me-2"></i>Claim Your Prize
+                </h4>
+                <p class="text-muted mb-4">Please provide your details to generate your unique redemption link:</p>
+
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="full_name" class="form-label">
+                                <i class="fas fa-user me-1"></i>Full Name *
+                            </label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>Email Address *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone me-1"></i> Phone Number *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">+91</span>
+                                <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
+                                    maxlength="10" required placeholder="Enter 10-digit mobile number">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="address" class="form-label">
+                                <i class="fas fa-map-marker-alt me-1"></i>Address *
+                            </label>
+                            <textarea class="form-control" id="address" name="address" rows="2"
+                                style="height: 130px;width: 243px; resize: none;" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success btn-lg px-5">
+                            <i class="fas fa-gift me-2"></i>Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function copyToClipboard() {
+        const urlInput = document.getElementById('redemption-url');
+        urlInput.select();
+        urlInput.setSelectionRange(0, 99999);
+
+        try {
+            document.execCommand('copy');
+            // Show success feedback
+            const button = document.querySelector('button[onclick="copyToClipboard()"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+</script>
+{% endblock %}
