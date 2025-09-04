@@ -67,7 +67,7 @@ def scratch_result():
     
     if not redemption_link or redemption_link.is_redeemed:
         flash('Invalid or already used redemption link.', 'error')
-        return redirect(url_for('index'))
+        return render_template('500.html')
     
     # Get all products
     products = Product.query.all()
